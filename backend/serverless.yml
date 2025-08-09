@@ -1,0 +1,44 @@
+service: portfolio-backend
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-southeast-1
+  stage: dev
+  environment:
+    NODE_OPTIONS: --enable-source-maps
+functions:
+  api:
+    handler: app/lambda.handler
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: any
+plugins:
+  - serverless-offline
+build:
+  esbuild:
+      bundle: true
+      minify: false
+      sourcemap: true
+      external:
+        - '@nestjs/microservices'
+        - '@nestjs/microservices/microservices-module'
+        - '@nestjs/websockets'
+        - '@nestjs/websockets/socket-module'
+        - '@nestjs/platform-socket.io'
+        - 'kafkajs'
+        - 'ioredis'
+        - 'amqplib'
+        - 'amqp-connection-manager'
+        - 'nats'
+        - 'mqtt'
+        - '@grpc/grpc-js'
+        - '@grpc/proto-loader'
+        - 'class-transformer'
+        - 'class-validator'
+
+# This config:
+
+# Deploys a single Lambda (api)
+# Routes all /api/... requests via API Gateway HTTP API
+# Uses Singapore region (you can change to nearest)
